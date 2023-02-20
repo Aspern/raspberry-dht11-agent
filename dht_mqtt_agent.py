@@ -2,11 +2,13 @@ import ssl
 import configparser
 import paho.mqtt.client as mqtt
 import time
+import os
 from init_dht_device import init_dht_device
 
 # reading config from environment
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(f'/home/{os.environ["USER"]}/config/dht_agent_config.ini')
+
 
 # set variables from config.ini file
 mqttHost = config['mqtt']['host']

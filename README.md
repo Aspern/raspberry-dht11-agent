@@ -18,15 +18,24 @@ git clone https://github.com/Aspern/raspberry-dht11-agent.git
 The `raspberry-dht-agent` needs third party packages to start working.
 
 ```bash
-pip3 install adafruit-circuitpython-dht
-pip3 install paho-mqtt
-pip3 install configparser
+pip3 install adafruit-circuitpython-dht paho-mqtt configparser
 sudo apt-get install libgpiod2
 ```
 
 ### Configuration
 
+First create a copy if the sample config file and move it to following dir.
+
+```bash
+mkdir /home/$USER/config
+cp config.ini /home/$USER/config/dht_agent_config.ini
+```
+
 Before starting the client, the configuration in the `config.ini` file needs to be adjusted.
+
+```bash
+nano /home/$USER/config/dht_agent_config.ini
+```
 
 | Parameter                      | Description                                                          | Example     |
 |--------------------------------|----------------------------------------------------------------------|-------------|
@@ -47,6 +56,12 @@ The best way to execute the `raspberry-dht-agent` is to initialize a crontab for
 Therefore following scripts in the repository can be used.
 
 ```bash
-chmod +x install_crontab.sh
-./install_crontab.sh
+mkdir /home/$USER/logs
+crontab -e
+```
+
+add following line
+
+```bash
+@reboot python3 /home/$USER/raspberry-dht11-agent/dht_mqtt_agent.py > /home/$USER/logs/dht_agent.log 2>&1
 ```
