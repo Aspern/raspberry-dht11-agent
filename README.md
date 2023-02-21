@@ -50,18 +50,12 @@ nano /home/$USER/config/dht_agent_config.ini
 | `sensor.humidity_attribute`    | Name of the humidity attribute                                       | humidity    |
 | `sensor.polling_seconds`       | Time in seconds between data collection and upload                   | 900         |
 
-### Creating crontab
+### Starting script in the background
 
-The best way to execute the `raspberry-dht-agent` is to initialize a crontab for it on `@reboot`
-Therefore following scripts in the repository can be used.
-
-```bash
-mkdir /home/$USER/logs
-crontab -e
-```
-
-add following line
+The script can be executed in the background using following command.
 
 ```bash
-@reboot python3 /home/$USER/raspberry-dht11-agent/dht_mqtt_agent.py > /home/$USER/logs/dht_agent.log 2>&1
+nohup python3 -u dht_mqtt_agent.py </dev/null >/dev/null 2>&1 &
 ```
+
+the PID of the `nohup` process can be found with `ps xw`.

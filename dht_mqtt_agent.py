@@ -9,7 +9,6 @@ from init_dht_device import init_dht_device
 config = configparser.ConfigParser()
 config.read(f'/home/{os.environ["USER"]}/config/dht_agent_config.ini')
 
-
 # set variables from config.ini file
 mqttHost = config['mqtt']['host']
 mqttPort = int(config['mqtt']['port'])
@@ -35,18 +34,29 @@ client.tls_set_context(context)
 client.connect(mqttHost, port=mqttPort)
 client.loop_start()
 
-while True:
-    try:
-        # reading values from sensor
-        temperature = dhtDevice.temperature
-        humidity = dhtDevice.humidity
 
-        print(f'Sending data temperature={temperature}°C, humidity={humidity}%')
+def read_sensor_data():
+    while True:
+        try:
+            # reading values from sensor
+            temperature = dhtDevice.temperature
+            humidity = dhtDevice.humidity
 
-        # sending sensor values to digital twin on iot platform
-        client.publish(f'{realm}/{clientId}/writeattributevalue/{humidityAttribute}/{assetId}', payload=humidity)
-        client.publish(f'{realm}/{clientId}/writeattributevalue/{temperatureAttribute}/{assetId}', payload=temperature)
-    except RuntimeError:
-        print("Error reading or sending sensor values.", RuntimeError)
+            print(f'Sending data temperature={temperature}°C, humidity={humidity}%')
 
-    time.sleep(pollingSeconds)
+            # sending sensor values to digital twin on iot platform
+            client.publish(f'{realm}/{clientId}/writeattributevalue/{humidityAttribute}/{assetId}', payload=humidity)
+            client.publish(f'{realm}/{clientId}/writeattributevalue/{temperatureAttribute}/{assetId}',
+                           payload=temperature)
+        except RuntimeError:
+            print("Error reading or sending sensor values.", RuntimeError)
+
+        time.sleep(pollingSeconds)
+
+
+def main():
+    read_sensor_data()
+
+
+if __name__ == "__main__":
+    main()
